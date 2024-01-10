@@ -1,0 +1,79 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+input CreateHeroInput {
+  age: Int!
+  name: String!
+}
+
+input CreateSuperpowerInput {
+  heroId: Int!
+  name: String!
+}
+
+input CreateVillanInput {
+  heroId: Int!
+  name: String!
+}
+
+type Hero {
+  age: Int!
+
+  """Each Superhero must have an id"""
+  id: Int!
+  name: String!
+}
+
+type Mutation {
+  createHero(createHeroInput: CreateHeroInput!): Hero!
+  createSuperpower(createSuperpowerInput: CreateSuperpowerInput!): Superpower!
+  createVillan(createVillanInput: CreateVillanInput!): Villan!
+  removeHero(id: Int!): Hero!
+  removeSuperpower(id: Int!): Superpower!
+  removeVillan(id: Int!): Villan!
+  updateHero(updateHeroInput: UpdateHeroInput!): Hero!
+  updateSuperpower(updateSuperpowerInput: UpdateSuperpowerInput!): Superpower!
+  updateVillan(updateVillanInput: UpdateVillanInput!): Villan!
+}
+
+type Query {
+  hero(id: Int!): Hero!
+  heroes: [Hero!]!
+  superpower(id: Int!): Superpower!
+  superpowers: [Superpower!]!
+  villan(id: Int!): Villan!
+  villans: [Villan!]!
+}
+
+type Superpower {
+  heroId: Int!
+  id: Int!
+  name: String!
+}
+
+input UpdateHeroInput {
+  age: Int!
+  id: Int!
+  name: String!
+}
+
+input UpdateSuperpowerInput {
+  heroId: Int
+  id: Int!
+  name: String!
+}
+
+input UpdateVillanInput {
+  heroId: Int
+  id: Int!
+  name: String!
+}
+
+type Villan {
+  heroId: Int!
+
+  """Even a villan must have a unique id"""
+  id: Int!
+  name: String!
+}

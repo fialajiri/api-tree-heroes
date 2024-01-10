@@ -1,0 +1,33 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Hero {
+  id        Int         @id @default(autoincrement())
+  name      String
+  age       Int
+  superpowers Superpower[] // One-to-Many relationship with Superpower
+  archEnemy Villan?
+}
+
+model Superpower {
+  id    Int         @id @default(autoincrement())
+  name  String
+  heroId Int      @unique
+  heroes Hero     @relation(fields: [heroId], references: [id]) 
+}
+
+model Villan {
+  id      Int      @id @default(autoincrement())
+  name   String
+  heroId  Int      @unique
+  hero    Hero?    @relation(fields: [heroId], references: [id])
+}
