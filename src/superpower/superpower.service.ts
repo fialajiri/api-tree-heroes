@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateSuperpowerInput } from './dto/create-superpower.input';
 import { UpdateSuperpowerInput } from './dto/update-superpower.input';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from './../prisma/prisma.service';
 import { Superpower } from '@prisma/client';
 import { GetSuperpowerArgs } from './dto/get-superpower.args';
 import { GetSuperpowersArgs } from './dto/get-superpowers.args';

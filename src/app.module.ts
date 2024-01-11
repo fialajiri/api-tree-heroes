@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, ValidationPipe } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
@@ -10,6 +10,7 @@ import { VillanModule } from './villan/villan.module';
 import { AuthService } from './auth/auth.service';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
+import { APP_PIPE } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -26,6 +27,16 @@ import { UserModule } from './user/user.module';
     AuthModule,
     UserModule,
   ],
-  providers: [PrismaService, SuperpowerService, AuthService],
+  providers: [
+    PrismaService,
+    SuperpowerService,
+    AuthService,
+    {
+      provide: APP_PIPE,
+      useValue: new ValidationPipe({
+        whitelist: true,
+      }),
+    },
+  ],
 })
 export class AppModule {}

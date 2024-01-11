@@ -1,13 +1,13 @@
-import { Resolver, Mutation, Args, Context } from '@nestjs/graphql';
+import { Resolver, Mutation, Args } from '@nestjs/graphql';
 import { AuthService } from './auth.service';
 import { SignUpInput } from './dto/sign-up.input';
 import { JwtService } from '@nestjs/jwt';
 import { LoginInput } from './dto/login-input';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from './../prisma/prisma.service';
 import * as bcryptjs from 'bcryptjs';
-import { ResGql } from 'src/shared/decorators';
+import { ResGql } from './../shared/decorators';
 import { Response } from 'express';
-import { User } from 'src/user/entities/user.entity';
+import { User } from './../user/entities/user.entity';
 
 @Resolver(() => User)
 export class AuthResolver {

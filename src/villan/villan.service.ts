@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateVillanInput } from './dto/create-villan.input';
 import { UpdateVillanInput } from './dto/update-villan.input';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from './../prisma/prisma.service';
 import { Villan } from '@prisma/client';
 import { GetVillanArgs } from './dto/get-villan.args';
 

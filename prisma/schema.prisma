@@ -21,7 +21,7 @@ model Hero {
 model Superpower {
   id    Int         @id @default(autoincrement())
   name  String
-  heroId Int      @unique
+  heroId Int      
   heroes Hero     @relation(fields: [heroId], references: [id]) 
 }
 

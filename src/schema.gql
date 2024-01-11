@@ -47,7 +47,7 @@ type Mutation {
 }
 
 type Query {
-  hero(id: Int!): Hero!
+  hero(id: Int!): Hero
   heroes: [Hero!]!
   superpower(id: Int!): Superpower!
   superpowers(heroId: Int!): [Superpower!]!
