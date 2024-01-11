@@ -3,6 +3,8 @@ import { SuperpowerService } from './superpower.service';
 import { Superpower } from './entities/superpower.entity';
 import { CreateSuperpowerInput } from './dto/create-superpower.input';
 import { UpdateSuperpowerInput } from './dto/update-superpower.input';
+import { GetSuperpowerArgs } from './dto/get-superpower.args';
+import { GetSuperpowersArgs } from './dto/get-superpowers.args';
 
 @Resolver(() => Superpower)
 export class SuperpowerResolver {
@@ -16,13 +18,13 @@ export class SuperpowerResolver {
   }
 
   @Query(() => [Superpower], { name: 'superpowers' })
-  findAll() {
-    return this.superpowerService.findAll();
+  findAll(@Args() getSuperpowersArgs: GetSuperpowersArgs) {
+    return this.superpowerService.findAll(getSuperpowersArgs);
   }
 
   @Query(() => Superpower, { name: 'superpower' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.superpowerService.findOne(id);
+  findOne(@Args() getSuperpowerArgs: GetSuperpowerArgs) {
+    return this.superpowerService.findOne(getSuperpowerArgs);
   }
 
   @Mutation(() => Superpower)

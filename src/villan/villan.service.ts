@@ -3,6 +3,7 @@ import { CreateVillanInput } from './dto/create-villan.input';
 import { UpdateVillanInput } from './dto/update-villan.input';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Villan } from '@prisma/client';
+import { GetVillanArgs } from './dto/get-villan.args';
 
 @Injectable()
 export class VillanService {
@@ -19,8 +20,10 @@ export class VillanService {
     return this.prisma.villan.findMany();
   }
 
-  findOne(id: number): Promise<Villan | null> {
-    return this.prisma.villan.findUnique({ where: { id } });
+  findOne(getVillanArgs: GetVillanArgs): Promise<Villan | null> {
+    return this.prisma.villan.findUnique({
+      where: { heroId: getVillanArgs.heroId },
+    });
   }
 
   update(id: number, updateVillanInput: UpdateVillanInput): Promise<Villan> {

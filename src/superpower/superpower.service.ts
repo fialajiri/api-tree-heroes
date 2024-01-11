@@ -3,6 +3,8 @@ import { CreateSuperpowerInput } from './dto/create-superpower.input';
 import { UpdateSuperpowerInput } from './dto/update-superpower.input';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Superpower } from '@prisma/client';
+import { GetSuperpowerArgs } from './dto/get-superpower.args';
+import { GetSuperpowersArgs } from './dto/get-superpowers.args';
 
 @Injectable()
 export class SuperpowerService {
@@ -15,12 +17,16 @@ export class SuperpowerService {
     });
   }
 
-  findAll(): Promise<Superpower[]> {
-    return this.prisma.superpower.findMany();
+  findAll(getSuperpowersArgs: GetSuperpowersArgs): Promise<Superpower[]> {
+    return this.prisma.superpower.findMany({
+      where: { heroId: getSuperpowersArgs.heroId },
+    });
   }
 
-  findOne(id: number): Promise<Superpower | null> {
-    return this.prisma.superpower.findUnique({ where: { id } });
+  findOne(getSuperpowerArgs: GetSuperpowerArgs): Promise<Superpower | null> {
+    return this.prisma.superpower.findUnique({
+      where: { id: getSuperpowerArgs.id },
+    });
   }
 
   update(

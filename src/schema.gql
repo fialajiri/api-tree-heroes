@@ -19,19 +19,28 @@ input CreateVillanInput {
 
 type Hero {
   age: Int!
+  archEnemy: Villan
 
   """Each Superhero must have an id"""
   id: Int!
   name: String!
+  superpowers: [Superpower!]!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
 }
 
 type Mutation {
   createHero(createHeroInput: CreateHeroInput!): Hero!
   createSuperpower(createSuperpowerInput: CreateSuperpowerInput!): Superpower!
   createVillan(createVillanInput: CreateVillanInput!): Villan!
+  login(loginInput: LoginInput!): User!
   removeHero(id: Int!): Hero!
   removeSuperpower(id: Int!): Superpower!
   removeVillan(id: Int!): Villan!
+  signup(signUpInput: SignUpInput!): User!
   updateHero(updateHeroInput: UpdateHeroInput!): Hero!
   updateSuperpower(updateSuperpowerInput: UpdateSuperpowerInput!): Superpower!
   updateVillan(updateVillanInput: UpdateVillanInput!): Villan!
@@ -41,9 +50,14 @@ type Query {
   hero(id: Int!): Hero!
   heroes: [Hero!]!
   superpower(id: Int!): Superpower!
-  superpowers: [Superpower!]!
-  villan(id: Int!): Villan!
+  superpowers(heroId: Int!): [Superpower!]!
+  villan(heroId: String!): Villan!
   villans: [Villan!]!
+}
+
+input SignUpInput {
+  email: String!
+  password: String!
 }
 
 type Superpower {
@@ -68,6 +82,14 @@ input UpdateVillanInput {
   heroId: Int
   id: Int!
   name: String!
+}
+
+type User {
+  email: String!
+
+  """Each Superhero must have an id"""
+  id: Int!
+  password: String!
 }
 
 type Villan {

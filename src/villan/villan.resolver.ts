@@ -3,6 +3,7 @@ import { VillanService } from './villan.service';
 import { Villan } from './entities/villan.entity';
 import { CreateVillanInput } from './dto/create-villan.input';
 import { UpdateVillanInput } from './dto/update-villan.input';
+import { GetVillanArgs } from './dto/get-villan.args';
 
 @Resolver(() => Villan)
 export class VillanResolver {
@@ -21,8 +22,8 @@ export class VillanResolver {
   }
 
   @Query(() => Villan, { name: 'villan' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.villanService.findOne(id);
+  findOne(@Args() getVillanArgs: GetVillanArgs) {
+    return this.villanService.findOne(getVillanArgs);
   }
 
   @Mutation(() => Villan)
