@@ -27,7 +27,7 @@ describe('AppController (e2e)', () => {
         .post('/graphql')
         .send({
           query:
-            'mutation {signup(signUpInput: {email: "test@test.com", password: "123456"}){id, email, password }}',
+            'mutation {signup(signUpInput: {email: "test@test.com", password: "123456"}){id, email }}',
         })
         .expect(200);
 
@@ -38,7 +38,7 @@ describe('AppController (e2e)', () => {
     it('should throw an error with incorrect email input', async () => {
       const res = await request(app.getHttpServer()).post('/graphql').send({
         query:
-          'mutation {signup(signUpInput: {email: "thisEmailIsInvalid", password: "123456"}){id, email, password }}',
+          'mutation {signup(signUpInput: {email: "thisEmailIsInvalid", password: "123456"}){id, email }}',
       });
 
       expect(res.body.errors[0].extensions.originalError.statusCode).toBe(400);
@@ -47,7 +47,7 @@ describe('AppController (e2e)', () => {
     it('should throw an error with password length less then 6 characters', async () => {
       const res = await request(app.getHttpServer()).post('/graphql').send({
         query:
-          'mutation {signup(signUpInput: {email: "thisEmailIsInvalid", password: "123"}){id, email, password }}',
+          'mutation {signup(signUpInput: {email: "thisEmailIsInvalid", password: "123"}){id, email }}',
       });
       expect(res.body.errors[0].extensions.originalError.statusCode).toBe(400);
     });
@@ -57,7 +57,7 @@ describe('AppController (e2e)', () => {
         .post('/graphql')
         .send({
           query:
-            'mutation {signup(signUpInput: {email: "test@test.com", password: "123456"}){id, email, password }}',
+            'mutation {signup(signUpInput: {email: "test@test.com", password: "123456"}){id, email }}',
         })
         .expect(200);
       const cookie = res.get('Set-Cookie');
@@ -70,7 +70,7 @@ describe('AppController (e2e)', () => {
         .post('/graphql')
         .send({
           query:
-            'mutation {signup(signUpInput: {email: "test@test.com", password: "123456"}){id, email, password }}',
+            'mutation {signup(signUpInput: {email: "test@test.com", password: "123456"}){id, email }}',
         })
         .expect(200);
 
@@ -78,7 +78,7 @@ describe('AppController (e2e)', () => {
         .post('/graphql')
         .send({
           query:
-            'mutation {login(loginInput: {email: "test@test.com", password: "123456"}){id, email, password }}',
+            'mutation {login(loginInput: {email: "test@test.com", password: "123456"}){id, email }}',
         })
         .expect(200);
 
@@ -101,7 +101,7 @@ describe('AppController (e2e)', () => {
         .post('/graphql')
         .send({
           query:
-            'mutation {signup(signUpInput: {email: "test2@test.com", password: "123456"}){id, email, password }}',
+            'mutation {signup(signUpInput: {email: "test2@test.com", password: "123456"}){id, email }}',
         })
         .expect(200);
       cookie = res.get('Set-Cookie');
@@ -366,11 +366,36 @@ describe('AppController (e2e)', () => {
         .post('/graphql')
         .send({
           query:
-            'mutation {signup(signUpInput: {email: "test3@test.com", password: "123456"}){id, email, password }}',
+            'mutation {signup(signUpInput: {email: "test3@test.com", password: "123456"}){id, email }}',
         })
         .expect(200);
       cookie = res.get('Set-Cookie');
     });
+
+    it('should return Unauthorized for createSuperpower mutation without valid cookie', async () => {
+      const heroName = 'The Flash';
+      const heroAge = 28;
+      const superpowerOne = 'Superhuman speed';
+
+      const { body } = await request(app.getHttpServer())
+        .post('/graphql')
+        .set('Cookie', cookie)
+        .send({
+          query: `mutation {createHero(createHeroInput: {name: "${heroName}", age: ${heroAge}}){id, name, age }}`,
+        })
+        .expect(200);
+
+      const heroId = body.data.createHero.id;
+
+      const { body: bodySecond } = await request(app.getHttpServer())
+        .post('/graphql')
+        .send({
+          query: `mutation {createSuperpower(createSuperpowerInput: {name: "${superpowerOne}", heroId: ${heroId}}){id, name, heroId}}`,
+        });
+
+      expect(bodySecond.errors[0].message).toEqual('Unauthorized');
+    });
+
     it('should create a superpower and assign it to a hero', async () => {
       const heroName = 'The Flash';
       const heroAge = 28;
@@ -417,6 +442,42 @@ describe('AppController (e2e)', () => {
         numberOfSuperpowers,
       );
     });
+
+    it('should return Unauthorized for updateSuperpower mutation without valid cookie', async () => {
+      const heroName = 'Harley Quinn';
+      const heroAge = 27;
+      const superpowerOne = 'Skilled gymnast';
+      const superpowerTwo = 'Extreme crazyness';
+
+      const { body } = await request(app.getHttpServer())
+        .post('/graphql')
+        .set('Cookie', cookie)
+        .send({
+          query: `mutation {createHero(createHeroInput: {name: "${heroName}", age: ${heroAge}}){id, name, age }}`,
+        })
+        .expect(200);
+
+      const heroId = body.data.createHero.id;
+
+      const { body: bodySecond } = await request(app.getHttpServer())
+        .post('/graphql')
+        .set('Cookie', cookie)
+        .send({
+          query: `mutation {createSuperpower(createSuperpowerInput: {name: "${superpowerOne}", heroId: ${heroId}}){id, name, heroId}}`,
+        })
+        .expect(200);
+
+      const superpowerId = bodySecond.data.createSuperpower.id;
+
+      const { body: bodyThird } = await request(app.getHttpServer())
+        .post('/graphql')
+        .send({
+          query: `mutation {updateSuperpower(updateSuperpowerInput: {name: "${superpowerTwo}", id: ${superpowerId}}){id, name, heroId}}`,
+        });
+
+      expect(bodyThird.errors[0].message).toEqual('Unauthorized');
+    });
+
     it('should modify a superpower name', async () => {
       const heroName = 'Harley Quinn';
       const heroAge = 27;
@@ -463,6 +524,40 @@ describe('AppController (e2e)', () => {
       expect(bodyThird.data.hero.superpowers[0].name).toEqual(superpowerTwo);
     });
 
+    it('should return Unauthorized for get superpower query without valid cookie', async () => {
+      const heroName = 'Black Panther';
+      const heroAge = 35;
+      const superpowerOne = 'Enhanced strength,';
+
+      const { body } = await request(app.getHttpServer())
+        .post('/graphql')
+        .set('Cookie', cookie)
+        .send({
+          query: `mutation {createHero(createHeroInput: {name: "${heroName}", age: ${heroAge}}){id, name, age }}`,
+        })
+        .expect(200);
+
+      const heroId = body.data.createHero.id;
+
+      const { body: bodySecond } = await request(app.getHttpServer())
+        .post('/graphql')
+        .set('Cookie', cookie)
+        .send({
+          query: `mutation {createSuperpower(createSuperpowerInput: {name: "${superpowerOne}", heroId: ${heroId}}){id, name, heroId}}`,
+        })
+        .expect(200);
+
+      const superpowerId = bodySecond.data.createSuperpower.id;
+
+      const { body: bodyThird } = await request(app.getHttpServer())
+        .post('/graphql')
+        .send({
+          query: `{superpower(id: ${superpowerId}){id, name, heroId}}`,
+        });
+
+      expect(bodyThird.errors[0].message).toEqual('Unauthorized');
+    });
+
     it('should get superpower by id', async () => {
       const heroName = 'Black Panther';
       const heroAge = 35;
@@ -499,6 +594,48 @@ describe('AppController (e2e)', () => {
       expect(bodyThird.data.superpower.name).toEqual(superpowerOne);
       expect(bodyThird.data.superpower.id).toEqual(superpowerId);
       expect(bodyThird.data.superpower.heroId).toEqual(heroId);
+    });
+
+    it('should return Unauthorized for get superpowers query without valid cookie', async () => {
+      const heroName = 'Doctor Strange';
+      const heroAge = 42;
+      const superpowerOne = 'Mastery of the mystic arts';
+      const superpowerTwo = 'Reality manipulation';
+
+      const { body } = await request(app.getHttpServer())
+        .post('/graphql')
+        .set('Cookie', cookie)
+        .send({
+          query: `mutation {createHero(createHeroInput: {name: "${heroName}", age: ${heroAge}}){id, name, age }}`,
+        })
+        .expect(200);
+
+      const heroId = body.data.createHero.id;
+
+      await request(app.getHttpServer())
+        .post('/graphql')
+        .set('Cookie', cookie)
+        .send({
+          query: `mutation {createSuperpower(createSuperpowerInput: {name: "${superpowerOne}", heroId: ${heroId}}){id, name, heroId}}`,
+        })
+        .expect(200);
+
+      await request(app.getHttpServer())
+        .post('/graphql')
+        .set('Cookie', cookie)
+        .send({
+          query: `mutation {createSuperpower(createSuperpowerInput: {name: "${superpowerTwo}", heroId: ${heroId}}){id, name, heroId}}`,
+        })
+        .expect(200);
+
+      const { body: bodySecond } = await request(app.getHttpServer())
+        .post('/graphql')
+        .send({
+          query: `{superpowers(heroId: ${heroId}){id, name, heroId}}`,
+        })
+        .expect(200);
+
+      expect(bodySecond.errors[0].message).toEqual('Unauthorized');
     });
 
     it('should get all hero superpowers', async () => {
@@ -543,6 +680,40 @@ describe('AppController (e2e)', () => {
         .expect(200);
 
       expect(bodySecond.data.superpowers.length).toEqual(numberOfSuperpowers);
+    });
+
+    it('should return Unauthorized for remove superpower mutation without valid cookie', async () => {
+      const heroName = 'Hulk';
+      const heroAge = 38;
+      const superpowerOne = 'Superhuman strength';
+
+      const { body } = await request(app.getHttpServer())
+        .post('/graphql')
+        .set('Cookie', cookie)
+        .send({
+          query: `mutation {createHero(createHeroInput: {name: "${heroName}", age: ${heroAge}}){id, name, age }}`,
+        })
+        .expect(200);
+
+      const heroId = body.data.createHero.id;
+
+      const { body: bodySecond } = await request(app.getHttpServer())
+        .post('/graphql')
+        .set('Cookie', cookie)
+        .send({
+          query: `mutation {createSuperpower(createSuperpowerInput: {name: "${superpowerOne}", heroId: ${heroId}}){id, name, heroId}}`,
+        })
+        .expect(200);
+
+      const superpowerId = bodySecond.data.createSuperpower.id;
+      const { body: bodyThird } = await request(app.getHttpServer())
+        .post('/graphql')
+        .send({
+          query: `mutation {removeSuperpower(id: ${superpowerId}){id}}`,
+        })
+        .expect(200);
+
+      expect(bodyThird.errors[0].message).toEqual('Unauthorized');
     });
 
     it('should remove a superpower from hero', async () => {
@@ -601,10 +772,34 @@ describe('AppController (e2e)', () => {
         .post('/graphql')
         .send({
           query:
-            'mutation {signup(signUpInput: {email: "test4@test.com", password: "123456"}){id, email, password }}',
+            'mutation {signup(signUpInput: {email: "test4@test.com", password: "123456"}){id, email }}',
         })
         .expect(200);
       cookie = res.get('Set-Cookie');
+    });
+
+    it('should return Unauthorized for createVillan mutation without valid cookie', async () => {
+      const heroName = 'Black Widow';
+      const heroAge = 38;
+      const archEnemy = 'Taskmaster';
+
+      const { body } = await request(app.getHttpServer())
+        .post('/graphql')
+        .set('Cookie', cookie)
+        .send({
+          query: `mutation {createHero(createHeroInput: {name: "${heroName}", age: ${heroAge}}){id, name, age }}`,
+        })
+        .expect(200);
+
+      const heroId = body.data.createHero.id;
+
+      const { body: bodySecond } = await request(app.getHttpServer())
+        .post('/graphql')
+        .send({
+          query: `mutation {createVillan(createVillanInput: {name: "${archEnemy}", heroId: ${heroId}}){id, name }}`,
+        });
+
+      expect(bodySecond.errors[0].message).toEqual('Unauthorized');
     });
 
     it('should create a villan and assign him to a hero as his arch enemy', async () => {
@@ -640,6 +835,71 @@ describe('AppController (e2e)', () => {
 
       expect(bodySecond.data.hero.name).toEqual(heroName);
       expect(bodySecond.data.hero.archEnemy.name).toEqual(archEnemy);
+    });
+
+    it('should return 400 when invalid inputs are provided into createVillan mutation', async () => {
+      const heroName = 'Black Widow';
+      const heroAge = 38;
+      const invalidArchEnemyName = '';
+
+      const { body } = await request(app.getHttpServer())
+        .post('/graphql')
+        .set('Cookie', cookie)
+        .send({
+          query: `mutation {createHero(createHeroInput: {name: "${heroName}", age: ${heroAge}}){id, name, age }}`,
+        })
+        .expect(200);
+
+      const heroId = body.data.createHero.id;
+
+      const { body: bodySecond } = await request(app.getHttpServer())
+        .post('/graphql')
+        .set('Cookie', cookie)
+        .send({
+          query: `mutation {createVillan(createVillanInput: {name: "${invalidArchEnemyName}", heroId: ${heroId}}){id, name }}`,
+        });
+
+      expect(bodySecond.errors[0].extensions.originalError.message[0]).toEqual(
+        'name should not be empty',
+      );
+      expect(bodySecond.errors[0].extensions.originalError.statusCode).toBe(
+        400,
+      );
+    });
+
+    it('should return Unauthorized for updateVillan mutation without valid cookie', async () => {
+      const heroName = 'Iron Man';
+      const heroAge = 52;
+      const archEnemy = 'The Mandarin';
+      const archEnemyTwo = 'Thanos';
+
+      const { body } = await request(app.getHttpServer())
+        .post('/graphql')
+        .set('Cookie', cookie)
+        .send({
+          query: `mutation {createHero(createHeroInput: {name: "${heroName}", age: ${heroAge}}){id, name, age }}`,
+        })
+        .expect(200);
+
+      const heroId = body.data.createHero.id;
+
+      const { body: bodySecond } = await request(app.getHttpServer())
+        .post('/graphql')
+        .set('Cookie', cookie)
+        .send({
+          query: `mutation {createVillan(createVillanInput: {name: "${archEnemy}", heroId: ${heroId}}){id, name }}`,
+        })
+        .expect(200);
+
+      const villanId = bodySecond.data.createVillan.id;
+
+      const { body: bodyThird } = await request(app.getHttpServer())
+        .post('/graphql')
+        .send({
+          query: `mutation {updateVillan(updateVillanInput: {name: "${archEnemyTwo}", id: ${villanId}}){id, name }}`,
+        });
+
+      expect(bodyThird.errors[0].message).toEqual('Unauthorized');
     });
 
     it('should modify villans name', async () => {
@@ -688,6 +948,38 @@ describe('AppController (e2e)', () => {
       expect(bodyThird.data.hero.archEnemy.name).toEqual(archEnemyTwo);
     });
 
+    it('should return Unauthorized for villans query without valid cookie', async () => {
+      const heroName = 'Batman';
+      const heroAge = 45;
+      const archEnemy = 'The Joker';
+
+      const { body } = await request(app.getHttpServer())
+        .post('/graphql')
+        .set('Cookie', cookie)
+        .send({
+          query: `mutation {createHero(createHeroInput: {name: "${heroName}", age: ${heroAge}}){id, name, age }}`,
+        })
+        .expect(200);
+
+      const heroId = body.data.createHero.id;
+
+      await request(app.getHttpServer())
+        .post('/graphql')
+        .set('Cookie', cookie)
+        .send({
+          query: `mutation {createVillan(createVillanInput: {name: "${archEnemy}", heroId: ${heroId}}){id, name }}`,
+        })
+        .expect(200);
+
+      const { body: bodySecond } = await request(app.getHttpServer())
+        .post('/graphql')
+        .send({
+          query: `{villans{id, name, heroId }}`,
+        });
+
+      expect(bodySecond.errors[0].message).toEqual('Unauthorized');
+    });
+
     it('should find all villans', async () => {
       const heroName = 'Batman';
       const heroAge = 45;
@@ -721,6 +1013,40 @@ describe('AppController (e2e)', () => {
         .expect(200);
 
       expect(bodySecond.data.villans.length).toEqual(numberOfVillans);
+    });
+
+    it('should return Unauthorized for removeVillan mutation without valid cookie', async () => {
+      const heroName = 'Spider-Man';
+      const heroAge = 25;
+      const archEnemy = 'Green Goblin';
+
+      const { body } = await request(app.getHttpServer())
+        .post('/graphql')
+        .set('Cookie', cookie)
+        .send({
+          query: `mutation {createHero(createHeroInput: {name: "${heroName}", age: ${heroAge}}){id, name, age }}`,
+        })
+        .expect(200);
+
+      const heroId = body.data.createHero.id;
+
+      const { body: bodySecond } = await request(app.getHttpServer())
+        .post('/graphql')
+        .set('Cookie', cookie)
+        .send({
+          query: `mutation {createVillan(createVillanInput: {name: "${archEnemy}", heroId: ${heroId}}){id, name }}`,
+        })
+        .expect(200);
+
+      const villanId = bodySecond.data.createVillan.id;
+
+      const { body: bodyThird } = await request(app.getHttpServer())
+        .post('/graphql')
+        .send({
+          query: `mutation {removeVillan(id: ${villanId}){id, name, heroId }}`,
+        });
+
+      expect(bodyThird.errors[0].message).toEqual('Unauthorized');
     });
 
     it('should delete a villan', async () => {

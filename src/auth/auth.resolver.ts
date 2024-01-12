@@ -8,6 +8,7 @@ import * as bcryptjs from 'bcryptjs';
 import { ResGql } from './../shared/decorators';
 import { Response } from 'express';
 import { User } from './../user/entities/user.entity';
+import { UserResponse } from './../user/entities/user-response.entity';
 
 @Resolver(() => User)
 export class AuthResolver {
@@ -17,7 +18,7 @@ export class AuthResolver {
     private readonly jwt: JwtService,
   ) {}
 
-  @Mutation(() => User)
+  @Mutation(() => UserResponse)
   async login(
     @Args('loginInput') loginInput: LoginInput,
     @ResGql() res: Response,
@@ -42,10 +43,14 @@ export class AuthResolver {
     const jwt = this.jwt.sign({ id: user.id });
     res.cookie('token', jwt, { httpOnly: true });
 
-    return user;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, ...rest } = user;
+    const userWithoutPassword: UserResponse = { ...rest };
+
+    return userWithoutPassword;
   }
 
-  @Mutation(() => User)
+  @Mutation(() => UserResponse)
   async signup(
     @Args('signUpInput') signUpInput: SignUpInput,
     @ResGql() res: Response,
@@ -57,18 +62,22 @@ export class AuthResolver {
     if (emailAlreadyInDb) {
       throw Error('Email is already in use');
     }
-    const password = await bcryptjs.hash(signUpInput.password, 10);
+    const hashedPassword = await bcryptjs.hash(signUpInput.password, 10);
 
     const user = await this.prisma.user.create({
       data: {
         ...signUpInput,
-        password,
+        password: hashedPassword,
       },
     });
 
     const jwt = this.jwt.sign({ id: user.id });
     res.cookie('token', jwt, { httpOnly: true });
 
-    return user;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, ...rest } = user;
+    const userWithoutPassword: UserResponse = { ...rest };
+
+    return userWithoutPassword;
   }
 }
