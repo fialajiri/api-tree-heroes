@@ -6,4 +6,21 @@ services:
     environment:
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=123
-      - POSTGRES_DB=heroes    
+      - POSTGRES_DB=heroes
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  
+  api-tree-heroes:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    environment:
+      - JWT_SECRET=secret
+
+volumes:
+  postgres_data:
+      

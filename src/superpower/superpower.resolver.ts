@@ -6,7 +6,7 @@ import { UpdateSuperpowerInput } from './dto/update-superpower.input';
 import { GetSuperpowerArgs } from './dto/get-superpower.args';
 import { GetSuperpowersArgs } from './dto/get-superpowers.args';
 import { UseGuards } from '@nestjs/common';
-import { GqlAuthGuard } from './../../src/auth/graph-ql-auth-guard';
+import { GqlAuthGuard } from './../auth/graph-ql-auth-guard';
 
 @Resolver(() => Superpower)
 export class SuperpowerResolver {

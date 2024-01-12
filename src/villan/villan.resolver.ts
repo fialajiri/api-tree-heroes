@@ -5,7 +5,7 @@ import { CreateVillanInput } from './dto/create-villan.input';
 import { UpdateVillanInput } from './dto/update-villan.input';
 import { GetVillanArgs } from './dto/get-villan.args';
 import { UseGuards } from '@nestjs/common';
-import { GqlAuthGuard } from './../../src/auth/graph-ql-auth-guard';
+import { GqlAuthGuard } from './../auth/graph-ql-auth-guard';
 
 @Resolver(() => Villan)
 export class VillanResolver {
