@@ -1,38 +1,21 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
-
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
-
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
-
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Introducing the "APITREE - HEROES" application – a nifty platform designed to unleash your inner superhero creator! This splendid app empowers you to craft your very own superhero persona, complete with a dazzling array of cool superpowers and, of course, a formidable arch enemy.
+
+Underneath its digital hood, the APITREE - HEROES app is ingeniously crafted using the Nest.js framework, a web framework that's as robust as a superhero's shield. Harnessing the power of GraphQL, the app seamlessly communicates and exchanges data, ensuring a super-responsive and efficient user experience.
+
+Bolstering its technological prowess, APITREE - HEROES has its data superheroically stored in a PostgreSQL database, managed with the Prisma ORM (Object-Relational Mapping). This dynamic duo ensures that your superhero creations, superpowers, and arch enemies are securely stored and easily accessible whenever your heroic heart desires.
+
+So, whether you're envisioning an unstoppable force of good or a mischievous anti-hero, APITREE - HEROES is your digital canvas to let your superhero imagination soar to new heights! 🦸‍♂️💥🚀
 
 ## Installation
-
+If you're not on the Docker hype train, buckle up and get ready for some npm magic:
 ```bash
 $ npm install
 ```
 
 ## Running the app
+For those living life on the edge without Docker, choose your adventure:
 
 ```bash
 # development
@@ -45,29 +28,19 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
-## Test
+But hey, if Docker is your co-pilot, just hit the launch button:
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+$ docker compose up
 ```
 
-## Support
+## Test
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+I've thrown in a stellar collection of end-to-end tests – a galactic spectacle covering every nook and cranny of GraphQL. We're talking queries, mutations, ensuring all routes are guarded against those non-logged-in invaders, and of course, making sure input validation is as tight as a superhero's spandex suit:
 
-## Stay in touch
+```bash
+# e2e tests
+$ npm run test:e2e
+```
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
+So, whether you're setting sail on the npm seas or taking flight with Docker, the APITREE - HEROES app is ready to rock your world! 🚀🌐🦸‍♀️
