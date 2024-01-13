@@ -15,7 +15,13 @@ $ npm install
 ```
 
 ## Running the app
-For those living life on the edge without Docker, choose your adventure:
+For the fearless souls venturing into the tech wild without Docker, here's your quest:
+
+First, summon the mighty PostgreSQL database to your realm, and forge a connection string of power. Open your .env file and inscribe the incantation like so:
+
+```DATABASE_URL="postgresql://$DB_USER:$DB_PASSWORD@$DB_HOST:$DB_PORT/$DB_NAME?schema=public"```
+
+Next, gear up for the adventure:
 
 ```bash
 # development
